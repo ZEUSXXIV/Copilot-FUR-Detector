@@ -300,48 +300,102 @@ namespace SsmsCopilotFur
             // Set copilot active when logs are actively written
             TelemetryManager.Instance.IsCopilotActive = true;
 
-            // Simple pattern matching for typical GitHub Copilot log statements
-            if (line.IndexOf("completion", StringComparison.OrdinalIgnoreCase) >= 0)
+            // 1. Inline Completions (ghost text / autocomplete)
+            if (line.IndexOf("CompletionsProposalSource", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                line.IndexOf("completion", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 if (line.IndexOf("accepting", StringComparison.OrdinalIgnoreCase) >= 0 ||
                     line.IndexOf("accepted", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     TelemetryManager.Instance.LogEvent("CompletionAccepted", "InlineCompletion", "User accepted inline completion suggestion.");
                 }
-                else if (line.IndexOf("suggesting", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                else if (line.IndexOf("Requesting Proposals", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                         line.IndexOf("Request completions:", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                         line.IndexOf("suggesting", StringComparison.OrdinalIgnoreCase) >= 0 ||
                          line.IndexOf("getting", StringComparison.OrdinalIgnoreCase) >= 0 ||
                          line.IndexOf("triggering", StringComparison.OrdinalIgnoreCase) >= 0 ||
                          line.IndexOf("requesting", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    TelemetryManager.Instance.LogEvent("CompletionTriggered", "InlineCompletion", "Inline completion suggestion retrieved.");
-                }
-            }
-            else if (line.IndexOf("chat", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                if (line.IndexOf("prompt", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                    line.IndexOf("request", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                    line.IndexOf("query", StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    // Clean prompt info if we can find it
-                    string detail = "User submitted a query to Copilot Chat.";
-                    var match = Regex.Match(line, @"prompt:\s*(.*)", RegexOptions.IgnoreCase);
+                    string details = "Inline completion suggestion retrieved.";
+                    var match = Regex.Match(line, @"Request completions:\s*(.*)", RegexOptions.IgnoreCase);
                     if (match.Success)
                     {
-                        string queryText = match.Groups[1].Value.Trim();
-                        if (queryText.Length > 50) queryText = queryText.Substring(0, 47) + "...";
-                        detail = $"Query: {queryText}";
+                        string prefixText = match.Groups[1].Value.Trim();
+                        if (prefixText.Length > 50) prefixText = prefixText.Substring(0, 47) + "...";
+                        details = $"Request completions: {prefixText}";
                     }
-                    TelemetryManager.Instance.LogEvent("ChatQuery", "Chat", detail);
-                }
-                else if (line.IndexOf("opened", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                         line.IndexOf("show", StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    TelemetryManager.Instance.LogEvent("ChatOpened", "Chat", "Copilot Chat panel opened.");
+                    TelemetryManager.Instance.LogEvent("CompletionTriggered", "InlineCompletion", details);
                 }
             }
-            else if (line.IndexOf("sign-in", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                     line.IndexOf("auth", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                     line.IndexOf("login", StringComparison.OrdinalIgnoreCase) >= 0)
+            
+            // 2. Inline Requests (Alt + / or Ctrl + I inline chat)
+            if (line.IndexOf("FunctionInvoker", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (line.IndexOf("Initiating an Inline request", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    TelemetryManager.Instance.LogEvent("CompletionTriggered", "InlineCompletion", "Inline request initiated.");
+                }
+                else if (line.IndexOf("Inline request was accepted by the user", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    TelemetryManager.Instance.LogEvent("CompletionAccepted", "InlineCompletion", "Inline request accepted by the user.");
+                }
+                else if (line.IndexOf("User confirmation", StringComparison.OrdinalIgnoreCase) >= 0 &&
+                         line.IndexOf("resolved with status 'Accepted'", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    var toolMatch = Regex.Match(line, @"User confirmation for '(.*?)'", RegexOptions.IgnoreCase);
+                    string toolName = toolMatch.Success ? toolMatch.Groups[1].Value : "tool execution";
+                    TelemetryManager.Instance.LogEvent("ChatQuery", "Chat", $"Tool confirmation accepted: {toolName}");
+                }
+            }
+
+            // 3. Copilot Chat Interactions
+            if (line.IndexOf("CopilotClient EventType(11)", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                line.IndexOf("CopilotClient EventType(3)", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                TelemetryManager.Instance.LogEvent("ChatQuery", "Chat", "Copilot Chat interaction response received.");
+            }
+            else if (line.IndexOf("DocumentContextProvider", StringComparison.OrdinalIgnoreCase) >= 0 &&
+                     line.IndexOf("Successfully created document context", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                string fileDetails = "Chat context prepared.";
+                var fileMatch = Regex.Match(line, @"file '(.*?)'", RegexOptions.IgnoreCase);
+                if (fileMatch.Success)
+                {
+                    fileDetails = $"Chat context prepared for file: {fileMatch.Groups[1].Value}";
+                }
+                TelemetryManager.Instance.LogEvent("ChatQuery", "Chat", fileDetails);
+            }
+            else if (line.IndexOf("ConversationsServiceManager", StringComparison.OrdinalIgnoreCase) >= 0 &&
+                     line.IndexOf("started request", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                TelemetryManager.Instance.LogEvent("ChatOpened", "Chat", "Copilot Chat request started.");
+            }
+            else if (line.IndexOf("chat", StringComparison.OrdinalIgnoreCase) >= 0 &&
+                     (line.IndexOf("prompt", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                      line.IndexOf("request", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                      line.IndexOf("query", StringComparison.OrdinalIgnoreCase) >= 0))
+            {
+                string detail = "User submitted a query to Copilot Chat.";
+                var match = Regex.Match(line, @"prompt:\s*(.*)", RegexOptions.IgnoreCase);
+                if (match.Success)
+                {
+                    string queryText = match.Groups[1].Value.Trim();
+                    if (queryText.Length > 50) queryText = queryText.Substring(0, 47) + "...";
+                    detail = $"Query: {queryText}";
+                }
+                TelemetryManager.Instance.LogEvent("ChatQuery", "Chat", detail);
+            }
+            else if (line.IndexOf("chat", StringComparison.OrdinalIgnoreCase) >= 0 &&
+                     (line.IndexOf("opened", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                      line.IndexOf("show", StringComparison.OrdinalIgnoreCase) >= 0))
+            {
+                TelemetryManager.Instance.LogEvent("ChatOpened", "Chat", "Copilot Chat panel opened.");
+            }
+
+            // 4. Authentication / Sign In Status
+            if (line.IndexOf("sign-in", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                line.IndexOf("auth", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                line.IndexOf("login", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 if (line.IndexOf("success", StringComparison.OrdinalIgnoreCase) >= 0 ||
                     line.IndexOf("authorized", StringComparison.OrdinalIgnoreCase) >= 0)
