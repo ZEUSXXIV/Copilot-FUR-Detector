@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <Extern href="stdidcmd.h"/>
+  <Extern href="vsshlids.h"/>
+
+  <Commands package="guidSsmsCopilotFurPackage">
+    <Groups>
+      <Group guid="guidSsmsCopilotFurPackageCmdSet" id="SsmsCopilotFurMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_WINDOWS"/>
+      </Group>
+    </Groups>
+
+    <Buttons>
+      <Button guid="guidSsmsCopilotFurPackageCmdSet" id="cmdidCopilotFurToolWindowCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSsmsCopilotFurPackageCmdSet" id="SsmsCopilotFurMenuGroup"/>
+        <Strings>
+          <ButtonText>GitHub Copilot Usage Registry (FUR)</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+
+  <Symbols>
+    <GuidSymbol name="guidSsmsCopilotFurPackage" value="{a3df92d4-1a3b-4882-82ab-253c07cb7491}" />
+    <GuidSymbol name="guidSsmsCopilotFurPackageCmdSet" value="{7a7db300-3498-4b72-8f19-3543d2c88f17}">
+      <IDSymbol name="SsmsCopilotFurMenuGroup" value="0x1020" />
+      <IDSymbol name="cmdidCopilotFurToolWindowCommand" value="0x0100" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>

@@ -1,0 +1,259 @@
+<UserControl x:Class="SsmsCopilotFur.CopilotFurToolWindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="800"
+             Background="#1E1E24" Foreground="#F0F0F5">
+    
+    <UserControl.Resources>
+        <!-- Card Style -->
+        <Style x:Key="MetricCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#2A2A35" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="Margin" Value="6" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#323240" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Button Style -->
+        <Style x:Key="ModernButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#4F46E5" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#6366F1" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#4338CA" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DangerButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
+            <Setter Property="Background" Value="#DC2626" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#EF4444" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#B91C1C" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
+            <Setter Property="Background" Value="#4B5563" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#6B7280" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#374151" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="GitHub Copilot Usage Registry" FontSize="20" FontWeight="Bold" Foreground="#FFFFFF" />
+                <TextBlock Text="Feature Utilization and Telemetry Monitoring Tool" FontSize="12" Foreground="#9CA3AF" Margin="0,2,0,0" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <Border CornerRadius="12" Padding="8,4" Background="#111827" BorderBrush="#374151" BorderThickness="1" Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="SSMS v" Foreground="#9CA3AF" FontSize="11" />
+                        <TextBlock x:Name="SsmsVersionTextBlock" Text="22.7" Foreground="#E5E7EB" FontWeight="SemiBold" FontSize="11" />
+                    </StackPanel>
+                </Border>
+                <Border CornerRadius="12" Padding="8,4" Background="#111827" BorderBrush="#374151" BorderThickness="1">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Session: " Foreground="#9CA3AF" FontSize="11" />
+                        <TextBlock x:Name="SessionIdTextBlock" Text="XYZ" Foreground="#E5E7EB" FontWeight="SemiBold" FontSize="11" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <!-- Status Indicators -->
+        <Border Grid.Row="1" Background="#111827" CornerRadius="8" BorderThickness="1" BorderBrush="#374151" Padding="12" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="Copilot Extension: " VerticalAlignment="Center" Foreground="#9CA3AF" />
+                    <Border x:Name="InstalledStatusPill" CornerRadius="10" Padding="8,2" Margin="6,0,0,0" Background="#374151">
+                        <TextBlock x:Name="InstalledStatusText" Text="Detecting..." Foreground="#E5E7EB" FontSize="11" FontWeight="Bold" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="Connection Status: " VerticalAlignment="Center" Foreground="#9CA3AF" />
+                    <Border x:Name="ActiveStatusPill" CornerRadius="10" Padding="8,2" Margin="6,0,0,0" Background="#374151">
+                        <TextBlock x:Name="ActiveStatusText" Text="Offline" Foreground="#E5E7EB" FontSize="11" FontWeight="Bold" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="Logging Mode: " VerticalAlignment="Center" Foreground="#9CA3AF" />
+                    <Border CornerRadius="10" Padding="8,2" Margin="6,0,0,0" Background="#065F46">
+                        <TextBlock Text="Active" Foreground="#34D399" FontSize="11" FontWeight="Bold" />
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Metric Cards -->
+        <Grid Grid.Row="2" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Card 1: Total Events -->
+            <Border Grid.Column="0" Style="{StaticResource MetricCardStyle}" BorderBrush="#818CF8">
+                <StackPanel>
+                    <TextBlock Text="Total Events Captured" FontSize="12" Foreground="#A5B4FC" FontWeight="Medium" />
+                    <TextBlock x:Name="TotalEventsCountText" Text="0" FontSize="28" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,8,0,0" />
+                    <TextBlock Text="Cumulative operations logged" FontSize="10" Foreground="#6B7280" Margin="0,4,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- Card 2: Completions Accepted -->
+            <Border Grid.Column="1" Style="{StaticResource MetricCardStyle}" BorderBrush="#34D399">
+                <StackPanel>
+                    <TextBlock Text="Completions Logged" FontSize="12" Foreground="#6EE7B7" FontWeight="Medium" />
+                    <TextBlock x:Name="CompletionsCountText" Text="0" FontSize="28" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,8,0,0" />
+                    <TextBlock Text="Inline code assistant triggers" FontSize="10" Foreground="#6B7280" Margin="0,4,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- Card 3: Chat Queries -->
+            <Border Grid.Column="2" Style="{StaticResource MetricCardStyle}" BorderBrush="#60A5FA">
+                <StackPanel>
+                    <TextBlock Text="Chat Interactions" FontSize="12" Foreground="#93C5FD" FontWeight="Medium" />
+                    <TextBlock x:Name="ChatsCountText" Text="0" FontSize="28" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,8,0,0" />
+                    <TextBlock Text="Conversations and queries" FontSize="10" Foreground="#6B7280" Margin="0,4,0,0" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Data Log List -->
+        <Grid Grid.Row="3" Margin="0,0,0,16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Usage Registry Logs" FontSize="14" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,0,0,8" />
+
+            <Border Grid.Row="1" Background="#1F2937" CornerRadius="8" BorderThickness="1" BorderBrush="#374151">
+                <ListView x:Name="EventsListView" Background="Transparent" BorderThickness="0" Foreground="#F3F4F6">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Time" Width="130">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Timestamp, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Foreground="#9CA3AF" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Event Type" Width="130">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding EventType}" FontWeight="SemiBold" Foreground="#F3F4F6" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Feature" Width="110">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding FeatureName}" Foreground="#60A5FA" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Details" Width="380">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Details}" TextTrimming="CharacterEllipsis" Foreground="#D1D5DB" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderBrush" Value="#374151" />
+                            <Setter Property="BorderThickness" Value="0,0,0,1" />
+                            <Setter Property="Padding" Value="4,6" />
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#374151" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </Border>
+        </Grid>
+
+        <!-- Bottom Controls -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="StatusMessageTextBlock" Grid.Column="0" Text="Listening for GitHub Copilot usage events..." VerticalAlignment="Center" Foreground="#9CA3AF" FontSize="11" />
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Content="Refresh" Click="RefreshButton_Click" Style="{StaticResource SecondaryButtonStyle}" />
+                <Button Content="Clear Logs" Click="ClearButton_Click" Style="{StaticResource DangerButtonStyle}" />
+                <Button Content="Export to CSV" Click="ExportButton_Click" Style="{StaticResource ModernButtonStyle}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>
