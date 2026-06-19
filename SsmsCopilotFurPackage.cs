@@ -26,7 +26,6 @@ namespace SsmsCopilotFur
         
         private DTE2 _dte;
         private CopilotDetector _detector;
-        private OutputWindowEvents _outputWindowEvents;
 
         public SsmsCopilotFurPackage()
         {
@@ -64,10 +63,6 @@ namespace SsmsCopilotFur
                 _detector = new CopilotDetector(this, _dte);
                 _detector.StartMonitoring();
 
-                // Listen to Output Window pane additions to dynamically catch Copilot pane loading
-                _outputWindowEvents = _dte.Events.OutputWindowEvents;
-                _outputWindowEvents.PaneAdded += OnOutputPaneAdded;
-
                 // Log extension activation
                 TelemetryManager.Instance.LogEvent("SessionStart", "System", "FUR extension loaded. Telemetry monitoring started.");
             }
@@ -75,20 +70,6 @@ namespace SsmsCopilotFur
             {
                 Debug.WriteLine($"[SsmsCopilotFurPackage] Error during InitializeAsync: {ex.Message}");
             }
-        }
-
-        private void OnOutputPaneAdded(OutputWindowPane pane)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            try
-            {
-                if (pane.Name.IndexOf("Copilot", StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    Debug.WriteLine($"[SsmsCopilotFurPackage] Dynamically detected new Output pane: '{pane.Name}'. Refreshing hooks.");
-                    _detector.HookOutputWindowPanes();
-                }
-            }
-            catch { }
         }
 
         private void ShowToolWindow(object sender, EventArgs e)
