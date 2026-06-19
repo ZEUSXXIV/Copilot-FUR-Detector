@@ -138,7 +138,7 @@
                 <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
                     <TextBlock Text="Logging Mode: " VerticalAlignment="Center" Foreground="#9CA3AF" />
                     <Border CornerRadius="10" Padding="8,2" Margin="6,0,0,0" Background="#065F46">
-                        <TextBlock Text="Active" Foreground="#34D399" FontSize="11" FontWeight="Bold" />
+                        <TextBlock Text="Command-Only" Foreground="#34D399" FontSize="11" FontWeight="Bold" />
                     </Border>
                 </StackPanel>
             </Grid>
@@ -157,25 +157,25 @@
                 <StackPanel>
                     <TextBlock Text="Total Events Captured" FontSize="12" Foreground="#A5B4FC" FontWeight="Medium" />
                     <TextBlock x:Name="TotalEventsCountText" Text="0" FontSize="28" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,8,0,0" />
-                    <TextBlock Text="Cumulative operations logged" FontSize="10" Foreground="#6B7280" Margin="0,4,0,0" />
+                    <TextBlock Text="Cumulative command events" FontSize="10" Foreground="#6B7280" Margin="0,4,0,0" />
                 </StackPanel>
             </Border>
 
-            <!-- Card 2: Completions Accepted -->
+            <!-- Card 2: Completion Commands -->
             <Border Grid.Column="1" Style="{StaticResource MetricCardStyle}" BorderBrush="#34D399">
                 <StackPanel>
-                    <TextBlock Text="Completions Logged" FontSize="12" Foreground="#6EE7B7" FontWeight="Medium" />
+                    <TextBlock Text="Completion Commands" FontSize="12" Foreground="#6EE7B7" FontWeight="Medium" />
                     <TextBlock x:Name="CompletionsCountText" Text="0" FontSize="28" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,8,0,0" />
-                    <TextBlock Text="Inline code assistant triggers" FontSize="10" Foreground="#6B7280" Margin="0,4,0,0" />
+                    <TextBlock Text="Accept &amp; manual triggers" FontSize="10" Foreground="#6B7280" Margin="0,4,0,0" />
                 </StackPanel>
             </Border>
 
-            <!-- Card 3: Chat Queries -->
+            <!-- Card 3: Chat Panel Commands -->
             <Border Grid.Column="2" Style="{StaticResource MetricCardStyle}" BorderBrush="#60A5FA">
                 <StackPanel>
-                    <TextBlock Text="Chat Interactions" FontSize="12" Foreground="#93C5FD" FontWeight="Medium" />
+                    <TextBlock Text="Chat Panel Commands" FontSize="12" Foreground="#93C5FD" FontWeight="Medium" />
                     <TextBlock x:Name="ChatsCountText" Text="0" FontSize="28" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,8,0,0" />
-                    <TextBlock Text="Conversations and queries" FontSize="10" Foreground="#6B7280" Margin="0,4,0,0" />
+                    <TextBlock Text="Window show &amp; toggle commands" FontSize="10" Foreground="#6B7280" Margin="0,4,0,0" />
                 </StackPanel>
             </Border>
         </Grid>
