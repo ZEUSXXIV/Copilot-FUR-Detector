@@ -149,7 +149,7 @@ namespace SsmsCopilotFur
         {
             lock (_events)
             {
-                var completions = _events.Count(e => e.EventType == "CompletionAccepted" || e.EventType == "CompletionTriggered");
+                var completions = _events.Count(e => e.EventType == "CompletionAccepted" || e.EventType == "CompletionTriggered" || e.EventType == "CompletionDismissed");
                 var chats = _events.Count(e => e.EventType == "ChatQuery" || e.EventType == "ChatOpened");
                 var lastEvent = _events.OrderByDescending(e => e.Timestamp).FirstOrDefault();
 

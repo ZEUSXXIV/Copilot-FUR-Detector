@@ -125,16 +125,26 @@ namespace SsmsCopilotFur
                             featureName = "Chat";
                             eventType = "ChatOpened";
                         }
-                        else if (command.Name.IndexOf("accept", StringComparison.OrdinalIgnoreCase) >= 0)
+                        else if (command.Name.IndexOf("accept", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 command.Name.IndexOf("keep", StringComparison.OrdinalIgnoreCase) >= 0)
                         {
                             featureName = "InlineCompletion";
                             eventType = "CompletionAccepted";
                         }
                         else if (command.Name.IndexOf("suggest", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                 command.Name.IndexOf("trigger", StringComparison.OrdinalIgnoreCase) >= 0)
+                                 command.Name.IndexOf("trigger", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 command.Name.IndexOf("next", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 command.Name.IndexOf("prev", StringComparison.OrdinalIgnoreCase) >= 0)
                         {
                             featureName = "InlineCompletion";
                             eventType = "CompletionTriggered";
+                        }
+                        else if (command.Name.IndexOf("undo", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 command.Name.IndexOf("reject", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 command.Name.IndexOf("dismiss", StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            featureName = "InlineCompletion";
+                            eventType = "CompletionDismissed";
                         }
 
                         TelemetryManager.Instance.IsCopilotActive = true;
